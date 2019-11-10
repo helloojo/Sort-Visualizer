@@ -1,0 +1,36 @@
+.container {
+  height: 95%;
+  width: 100%;
+  display: flex;
+}
+
+.bar-container {
+  height: 100%;
+  width: 85%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  background-color: black;
+  align-items: flex-end;
+}
+
+.bar {
+  border: 1px white solid; 
+  flex: 1;
+  width: auto;
+  background-color: aquamarine;
+}
+
+.bar:first-child {
+  margin-left: 1%;
+}
+
+.bar:last-child {
+  margin-right: 1%;
+}
+
+.setting {
+  background-color: bisque;
+  width: 15%;
+  height: 100%;
+}

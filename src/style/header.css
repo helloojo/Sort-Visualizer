@@ -1,0 +1,9 @@
+.header {
+  height: 5%;
+  width: 100%;
+  background-color: blue;
+}
+
+.header h1 {
+  color: white;
+}
