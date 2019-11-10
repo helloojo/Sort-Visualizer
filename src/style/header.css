@@ -1,9 +1,10 @@
 .header {
   height: 5%;
   width: 100%;
-  background-color: blue;
+  background-color: bisque;
 }
 
 .header h1 {
-  color: white;
+  font-size: 1.7rem;
+  color: black;
 }

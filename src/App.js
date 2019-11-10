@@ -67,12 +67,12 @@ class App extends React.Component {
     });
   }
 
-  updateHeightList = (heightList, timeidx, delay) => {
+  updateHeightList = (heightList, delay) => {
     return setTimeout((heightList) => {
       this.setState({
         heightList
       });
-    }, timeidx * delay, heightList.slice());
+    }, delay, heightList.slice());
   }  
 
   BubbleSort = (delay, length) => {
@@ -84,7 +84,7 @@ class App extends React.Component {
           let temp = heightList[j];
           heightList[j] = heightList[j + 1];
           heightList[j + 1] = temp;
-          const idx = this.updateHeightList(heightList, timeidx++, delay);
+          const idx = this.updateHeightList(heightList, (timeidx++)*delay);
           this.DelayList.push(idx);
         }
       }
@@ -101,12 +101,12 @@ class App extends React.Component {
       let aux = index - 1;
       while ((aux >= 0) && (heightList[aux] > temp)) {
         heightList[aux + 1] = heightList[aux];
-        const idx = this.updateHeightList(heightList, timeidx++, delay);
+        const idx = this.updateHeightList(heightList, (timeidx++)*delay);
         this.DelayList.push(idx);
         aux--;
       }
       heightList[aux + 1] = temp;
-      const idx = this.updateHeightList(heightList, timeidx++, delay);
+      const idx = this.updateHeightList(heightList, (timeidx++)*delay);
       this.DelayList.push(idx);
     }
     return timeidx;
@@ -127,17 +127,49 @@ class App extends React.Component {
       temp = heightList[indexMin];
       heightList[indexMin] = heightList[i];
       heightList[i] = temp;
-      const idx = this.updateHeightList(heightList, timeidx++, delay);
+      const idx = this.updateHeightList(heightList, (timeidx++)*delay);
       this.DelayList.push(idx);
     }
     return timeidx;
   }
-
   QuickSort = (delay, length) => {
     let timeidx = 0;
     const heightList = this.state.heightList.slice();
+    const quickSort = (arr, left, right) => {
+      if (left < right) {
+        const i = position(arr, left, right, timeidx++);
+        quickSort(arr, left, i - 1);
+        quickSort(arr, i + 1, right);
+      }
+      return arr;
+    };
+
+    const position = (arr, left, right, timei) => {
+      let i = left;
+      let j = right;
+      let pivot = arr[left];
+      let additionalDelay=delay/(right-left);
+      let additionalDelayidx=0;
+      while (i < j) {
+        while (arr[j] > pivot) j--;
+        while (i < j && arr[i] <= pivot) i++;
+        let tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+        const idx = this.updateHeightList(arr, timei*delay+(additionalDelayidx++)*additionalDelay);
+        this.DelayList.push(idx);
+      }
+      arr[left] = arr[j];
+      arr[j] = pivot;
+      const idx = this.updateHeightList(arr, timei*delay+(additionalDelayidx++)*additionalDelay);
+      this.DelayList.push(idx);
+      return j;
+    }
+
+    quickSort(heightList, 0, length - 1);
     return timeidx;
   }
+
 
   MergeSort = (delay, length) => {
     let timeidx = 0;
