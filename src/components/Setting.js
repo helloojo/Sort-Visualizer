@@ -30,7 +30,8 @@ class Setting extends Component {
       "Selection Sort",
       "Insertion Sort",
       "Quick Sort",
-      "Merge Sort"
+      "Merge Sort",
+      "Heap Sort"
     ];
     const {
       length,

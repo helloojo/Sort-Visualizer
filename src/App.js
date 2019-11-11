@@ -9,6 +9,7 @@ class App extends React.Component {
   Insertion = 2;
   Quick = 3;
   Merge = 4;
+  Heap = 5;
   DelayList=[];
 
   constructor() {
@@ -29,7 +30,7 @@ class App extends React.Component {
       length,
       heightList,
       colorList,
-      type: 0,
+      type: 4,
       delay: 100
     }
   }
@@ -132,6 +133,7 @@ class App extends React.Component {
     }
     return timeidx;
   }
+
   QuickSort = (delay, length) => {
     let timeidx = 0;
     const heightList = this.state.heightList.slice();
@@ -148,32 +150,106 @@ class App extends React.Component {
       let i = left;
       let j = right;
       let pivot = arr[left];
-      let additionalDelay=delay/(right-left);
-      let additionalDelayidx=0;
+      let changeQueue=[];
+      
       while (i < j) {
         while (arr[j] > pivot) j--;
         while (i < j && arr[i] <= pivot) i++;
         let tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
-        const idx = this.updateHeightList(arr, timei*delay+(additionalDelayidx++)*additionalDelay);
-        this.DelayList.push(idx);
+        changeQueue.push(arr.slice());
       }
       arr[left] = arr[j];
       arr[j] = pivot;
-      const idx = this.updateHeightList(arr, timei*delay+(additionalDelayidx++)*additionalDelay);
-      this.DelayList.push(idx);
+      changeQueue.push(arr.slice());
+      let additionalDelay=delay/changeQueue.length;
+      let additionalDelayidx=0;
+      for(const arr of changeQueue) {
+        const idx = this.updateHeightList(arr, timei*delay+(additionalDelayidx++)*additionalDelay);
+        this.DelayList.push(idx);
+      }
       return j;
     }
-
     quickSort(heightList, 0, length - 1);
     return timeidx;
   }
 
-
   MergeSort = (delay, length) => {
     let timeidx = 0;
     const heightList = this.state.heightList.slice();
+    
+    const combine = (arr, left, right, arr_) => {
+      for (let i = left; i <= right; i++) {
+        arr[i] = arr_[i];
+        const idx = this.updateHeightList(arr, (timeidx++)*delay);
+        this.DelayList.push(idx);
+      }
+    }
+
+    const mergeSort = (arr, left, right, arr_) => {
+      if (left >= right) return;
+      const mid = ((left + right)>>1);
+      mergeSort(arr, left, mid, arr_);
+      mergeSort(arr, mid + 1, right, arr_);
+      for (let k = left, i = left, j = mid + 1; k <= right; k++) {
+        if (j > right) arr_[k] = arr[i++];
+        else if (i > mid) arr_[k] = arr[j++];
+        else if (arr[i] < arr[j]) arr_[k] = arr[i++];
+        else arr_[k] = arr[j++];
+      }
+      combine(arr,left,right,arr_);
+    }
+    let copyArr=[];
+    
+    mergeSort(heightList, 0, length-1, copyArr);
+    
+    return timeidx;
+  }
+
+  HeapSort = (delay, length) => {
+    let timeidx = 0;
+    const heightList = this.state.heightList.slice();
+    const constructHeap = (arr, len) => {
+      for (let i = (len >> 1) - 1; i >= 0; i--) {
+        downHeap(arr, i, len);
+      }
+    }
+    const downHeap = (arr, here, len) => {
+      const data = arr[here];
+      let left, right, cmp_idx;
+      while ((left = (here << 1) + 1) < len) {
+        right = left + 1;
+        if (left === len - 1) {
+          cmp_idx = left;
+        } else if (arr[left] > arr[right]) {
+          cmp_idx = left;
+        } else {
+          cmp_idx = right;
+        }
+        if (data > arr[cmp_idx]) {
+          break;
+        }
+        arr[here] = arr[cmp_idx];
+        here = cmp_idx;
+      }
+      arr[here] = data;
+      const idx = this.updateHeightList(arr, (timeidx++) * delay);
+      this.DelayList.push(idx);
+    }
+
+    const heapSort = (arr, len) => {
+      constructHeap(arr, len);
+
+      for (let l = len - 1; l > 0; l--) {
+        const temp = arr[0];
+        arr[0] = arr[l];
+        arr[l] = temp;
+        downHeap(arr, 0, l);
+      }
+    }
+    heapSort(heightList, length);
+
     return timeidx;
   }
 
@@ -198,6 +274,9 @@ class App extends React.Component {
         break;
       case this.Merge:
         timeidx = this.MergeSort(delay, length);
+        break;
+      case this.Heap:
+        timeidx = this.HeapSort(delay, length);
         break;
       default:
         break;

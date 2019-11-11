@@ -18,7 +18,7 @@ class Container extends Component {
       remakeHeightList
     } = this.props;
     return (<div className="container">
-      <BarContainer length={length} heightList={heightList}/>
+      <BarContainer length={length} heightList={heightList} sorting={sorting}/>
       <Setting
         length={length} 
         delay={delay}
