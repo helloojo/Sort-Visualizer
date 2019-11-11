@@ -17,52 +17,57 @@ class App extends React.Component {
 
     const length = Math.ceil(Math.random() * 90) + 10;
     let heightList = [];
-    let colorList = [];
 
     for (let i = 0; i < length; i++) {
       const height = Math.random() * 100;
       heightList.push(height);
-      colorList.push("aquamarine");
     }
 
     this.state = {
       sorting: false,
       length,
       heightList,
-      colorList,
-      type: 4,
+      type: 0,
+      eType: 0,
       delay: 100
     }
   }
 
   handleLength = (length) => {
-    let cur_length = this.state.length;
-    let heightList = this.state.heightList.slice();
-    
-    while (cur_length !== length) {
-      if (cur_length > length) {
-        heightList.pop();
-        cur_length--;
-      } else if (cur_length < length) {
-        const height = Math.random() * 100;
-        heightList.push(height);
-        cur_length++;
-      }
-    }
-
     this.setState({
       length,
-      heightList
-    });
+    },this.remakeHeightList);
   }
 
   remakeHeightList = () => {
     const length = this.state.length;
     const heightList = [];
-    for (let i = 0; i < length; i++) {
-      const height = Math.random() * 100;
-      heightList.push(height);
+    let offset;
+    switch (this.state.eType) {
+      case 0:
+        for (let i = 0; i < length; i++) {
+          const height = Math.random() * 100;
+          heightList.push(height);
+        }
+        break;
+      case 1:
+        offset=100/(length+1);
+        heightList.push(offset);
+        for(let i=0;i<length-1;i++) {
+          heightList.push(heightList[i]+offset);
+        }
+        break;
+      case 2:
+        offset=100/(length+1);
+        heightList.push(100-offset);
+        for(let i=0;i<length-1;i++) {
+          heightList.push(heightList[i]-offset);
+        }
+        break;
+      default:
+        break;
     }
+   
     this.setState({
       heightList
     });
@@ -312,7 +317,13 @@ class App extends React.Component {
   handleType=(type) => {
     this.setState({
       type
-    });
+    },this.remakeHeightList);
+  }
+
+  handleElemType=(type)=> {
+    this.setState({
+      eType:type
+    },this.remakeHeightList);
   }
 
   render() {
@@ -321,14 +332,16 @@ class App extends React.Component {
       length,
       delay,
       heightList,
-      type
+      type,
+      eType
     } = this.state;
     const {
       handleLength,
       handleSorting,
       handleDelay,
       handleType,
-      remakeHeightList
+      remakeHeightList,
+      handleElemType
     } = this;
     return (
       <div className="App">
@@ -339,11 +352,13 @@ class App extends React.Component {
           sorting={sorting}
           heightList={heightList}
           type={type}
+          eType={eType}
           handleLength={handleLength} 
           handleSorting={handleSorting}
           handleDelay={handleDelay}
           handleType={handleType}
           remakeHeightList={remakeHeightList}
+          handleElemType={handleElemType}
         />
       </div>
     );

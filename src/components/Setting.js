@@ -4,6 +4,11 @@ class Setting extends Component {
   onTypeChange=(e)=>{
     this.props.handleType(parseInt(e.target.value));
   }
+
+  onElemTypeChange=(e)=> {
+    this.props.handleElemType(parseInt(e.target.value));
+  }
+  
   onElemCountChange = (e) => {
     let length = parseInt(e.target.value) || 1;
     if (length < 1) {
@@ -11,6 +16,7 @@ class Setting extends Component {
     }
     this.props.handleLength(parseInt(length));
   }
+
   onDelayChange = (e) => {
     let delay = parseInt(e.target.value) || 1;
     if (delay < 1) {
@@ -18,12 +24,15 @@ class Setting extends Component {
     }
     this.props.handleDelay(delay);
   }
+
   onStartClick = () => {
     this.props.handleSorting();
   }
+
   onRemakeClick = () => {
     this.props.remakeHeightList();
   }
+
   render() {
     const sortType=[
       "Bubble Sort",
@@ -33,11 +42,17 @@ class Setting extends Component {
       "Merge Sort",
       "Heap Sort"
     ];
+    const elemType=[
+      "Random",
+      "Ascending",
+      "Descending",
+    ]
     const {
       length,
       delay,
       sorting,
-      type
+      type,
+      eType
     } = this.props;
     return (
       <div className="setting">
@@ -49,16 +64,24 @@ class Setting extends Component {
           ))}
         </select>
         <br/>
+        <label htmlFor="elemtype">Elem Type</label>
+        <br/>
+        <select name="elemtype" onChange={this.onElemTypeChange} value={eType}>
+          {elemType.map((elem,index) => (
+            <option value={index} key={index}>{elem}</option>
+          ))}
+        </select>
+        <br/>
         <label htmlFor="num">Elem Count</label>
         <br/>
-        <input type="number" name="num" value={length} onChange={this.onElemCountChange}></input>
+        <input type="number" name="num" value={length} disabled={sorting} onChange={this.onElemCountChange}></input>
         <br/>
         <label htmlFor="delay">Delay</label>
         <br/>
-        <input type="number" name="delay" value={delay} onChange={this.onDelayChange}></input>ms
+        <input type="number" name="delay" value={delay} disabled={sorting} onChange={this.onDelayChange}></input>ms
         <br/>
         <input type="button" value={sorting ? "Stop":"Start"} onClick={this.onStartClick}></input>
-        <input type="button" value="remake" onClick={this.onRemakeClick}></input>
+        <input type="button" value="remake" disabled={sorting} onClick={this.onRemakeClick}></input>
       </div>
     )
   }

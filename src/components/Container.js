@@ -11,11 +11,13 @@ class Container extends Component {
       heightList,
       sorting,
       type,
+      eType,
       handleLength,
       handleSorting,
       handleDelay,
       handleType,
-      remakeHeightList
+      remakeHeightList,
+      handleElemType
     } = this.props;
     return (<div className="container">
       <BarContainer length={length} heightList={heightList} sorting={sorting}/>
@@ -24,11 +26,13 @@ class Container extends Component {
         delay={delay}
         sorting={sorting}
         type={type}
+        eType={eType}
         handleLength={handleLength} 
         handleSorting={handleSorting}
         handleDelay={handleDelay}
         handleType={handleType}
         remakeHeightList={remakeHeightList}
+        handleElemType={handleElemType}
       />
     </div>);
   }
