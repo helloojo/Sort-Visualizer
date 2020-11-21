@@ -7,6 +7,7 @@ import SelectionSort from "./sort/SelectionSort";
 import InsertionSort from "./sort/InsertionSort";
 import Element from "./sort/Element";
 import ElementMakeType from "./sort/ElementMakeType";
+import QuickSort from "./sort/QuickSort";
 
 class App extends React.Component {
     Bubble = 0;
@@ -20,7 +21,7 @@ class App extends React.Component {
     constructor() {
         super();
 
-        const length = 10;
+        const length = 1000;
         let element = new Element();
         element.initElements(length, ElementMakeType.RANDOM);
 
@@ -191,7 +192,9 @@ class App extends React.Component {
                 // timeIdx = this.InsertionSort(delay, length);
                 break;
             case this.Quick:
-                timeIdx = this.QuickSort(delay, length);
+                const sort4 = new QuickSort(this.state.element.arr, delay, this.updateElementArr);
+                sort4.start();
+                // timeIdx = this.QuickSort(delay, length);
                 break;
             case this.Merge:
                 timeIdx = this.MergeSort(delay, length);
