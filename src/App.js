@@ -3,6 +3,10 @@ import Header from './components/Header';
 import Container from './components/Container';
 import './style/App.css';
 import BubbleSort from "./sort/BubbleSort";
+import SelectionSort from "./sort/SelectionSort";
+import InsertionSort from "./sort/InsertionSort";
+import Element from "./sort/Element";
+import ElementMakeType from "./sort/ElementMakeType";
 
 class App extends React.Component {
     Bubble = 0;
@@ -16,18 +20,14 @@ class App extends React.Component {
     constructor() {
         super();
 
-        const length = 100;
-        let heightList = [];
-
-        for (let i = 0; i < length; i++) {
-            const height = Math.random() * 100;
-            heightList.push(height);
-        }
+        const length = 10;
+        let element = new Element();
+        element.initElements(length, ElementMakeType.RANDOM);
 
         this.state = {
             sorting: false,
             length,
-            heightList,
+            element,
             type: 0,
             eType: 0,
             delay: 50
@@ -82,109 +82,12 @@ class App extends React.Component {
         }, delay, heightList.slice());
     }
 
-    updateHeightList2 = (heightList) => {
+    updateElementArr = (arr) => {
         this.setState({
-            heightList: heightList.slice()
+            element: {
+                arr
+            }
         });
-    }
-
-    BubbleSort = (delay, length) => {
-        let timeidx = 0;
-        const heightList = this.state.heightList.slice();
-        for (let i = length - 1; i > 0; i--) {
-            for (let j = 0; j < i; j++) {
-                if (heightList[j] > heightList[j + 1]) {
-                    let temp = heightList[j];
-                    heightList[j] = heightList[j + 1];
-                    heightList[j + 1] = temp;
-                    const idx = this.updateHeightList(heightList, (timeidx++) * delay);
-                    this.DelayList.push(idx);
-                }
-            }
-        }
-        return timeidx;
-    }
-
-    InsertionSort = (delay, length) => {
-        let timeidx = 0;
-        const heightList = this.state.heightList.slice();
-
-        for (let index = 1; index < length; index++) {
-            let temp = heightList[index];
-            let aux = index - 1;
-            while ((aux >= 0) && (heightList[aux] > temp)) {
-                heightList[aux + 1] = heightList[aux];
-                const idx = this.updateHeightList(heightList, (timeidx++) * delay);
-                this.DelayList.push(idx);
-                aux--;
-            }
-            heightList[aux + 1] = temp;
-            const idx = this.updateHeightList(heightList, (timeidx++) * delay);
-            this.DelayList.push(idx);
-        }
-        return timeidx;
-    }
-
-    SelectionSort = (delay, length) => {
-        let timeidx = 0;
-        const heightList = this.state.heightList.slice();
-        let indexMin, temp;
-
-        for (let i = 0; i < length - 1; i++) {
-            indexMin = i;
-            for (let j = i + 1; j < length; j++) {
-                if (heightList[j] < heightList[indexMin]) {
-                    indexMin = j;
-                }
-            }
-            temp = heightList[indexMin];
-            heightList[indexMin] = heightList[i];
-            heightList[i] = temp;
-            const idx = this.updateHeightList(heightList, (timeidx++) * delay);
-            this.DelayList.push(idx);
-        }
-        return timeidx;
-    }
-
-    QuickSort = (delay, length) => {
-        let timeidx = 0;
-        const heightList = this.state.heightList.slice();
-        const quickSort = (arr, left, right) => {
-            if (left < right) {
-                const i = position(arr, left, right, timeidx++);
-                quickSort(arr, left, i - 1);
-                quickSort(arr, i + 1, right);
-            }
-            return arr;
-        };
-
-        const position = (arr, left, right, timei) => {
-            let i = left;
-            let j = right;
-            let pivot = arr[left];
-            let changeQueue = [];
-
-            while (i < j) {
-                while (arr[j] > pivot) j--;
-                while (i < j && arr[i] <= pivot) i++;
-                let tmp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = tmp;
-                changeQueue.push(arr.slice());
-            }
-            arr[left] = arr[j];
-            arr[j] = pivot;
-            changeQueue.push(arr.slice());
-            let additionalDelay = delay / changeQueue.length;
-            let additionalDelayidx = 0;
-            for (const arr of changeQueue) {
-                const idx = this.updateHeightList(arr, timei * delay + (additionalDelayidx++) * additionalDelay);
-                this.DelayList.push(idx);
-            }
-            return j;
-        }
-        quickSort(heightList, 0, length - 1);
-        return timeidx;
     }
 
     MergeSort = (delay, length) => {
@@ -273,15 +176,19 @@ class App extends React.Component {
         } = this.state;
         switch (type) {
             case this.Bubble:
-                const sort = new BubbleSort(this.state.heightList.slice(), delay, this.updateHeightList2);
+                const sort = new BubbleSort(this.state.element.arr, delay, this.updateElementArr);
                 sort.start()
                 // timeIdx = this.BubbleSort(delay, length);
                 break;
             case this.Selection:
-                timeIdx = this.SelectionSort(delay, length);
+                const sort2 = new SelectionSort(this.state.element.arr, delay, this.updateElementArr);
+                sort2.start();
+                // timeIdx = this.SelectionSort(delay, length);
                 break;
             case this.Insertion:
-                timeIdx = this.InsertionSort(delay, length);
+                const sort3 = new InsertionSort(this.state.element.arr, delay, this.updateElementArr);
+                sort3.start();
+                // timeIdx = this.InsertionSort(delay, length);
                 break;
             case this.Quick:
                 timeIdx = this.QuickSort(delay, length);
@@ -340,7 +247,7 @@ class App extends React.Component {
             sorting,
             length,
             delay,
-            heightList,
+            element,
             type,
             eType
         } = this.state;
@@ -359,7 +266,7 @@ class App extends React.Component {
                     length={length}
                     delay={delay}
                     sorting={sorting}
-                    heightList={heightList}
+                    heightList={element}
                     type={type}
                     eType={eType}
                     handleLength={handleLength}

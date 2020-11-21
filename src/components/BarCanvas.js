@@ -4,11 +4,11 @@ class BarCanvas extends Component {
     Canvas = document.createElement('canvas');
 
     componentDidMount() {
+        const ctx = this.refs.canvas.getContext("2d", {
+            alpha: false
+        });
         const Draw = () => {
-            const frontCanvas = this.refs["canvas"].getContext("2d", {
-                alpha: false
-            });
-            frontCanvas.drawImage(this.Canvas, 0, 0);
+            ctx.drawImage(this.Canvas, 0, 0);
             requestAnimationFrame(Draw);
         };
         Draw();
@@ -17,8 +17,7 @@ class BarCanvas extends Component {
     componentDidUpdate(prevProps, prevState) {
         const {
             width,
-            height,
-            sorting
+            height
         } = this.props;
         this.Canvas.width = width;
         this.Canvas.height = height;
@@ -29,13 +28,13 @@ class BarCanvas extends Component {
         ctx.fillRect(0, 0, width, height);
         ctx.fillStyle = "white";
         ctx.beginPath();
-        const prevheightList = prevProps.heightList;
-        const heightList = this.props.heightList;
+        const heightList = this.props.heightList.arr;
         const w = width / (heightList.length + 2);
         let x = w;
-        for (const idx in heightList) {
-            ctx.fillStyle = ((sorting && prevheightList[idx] !== heightList[idx]) ? "red" : "white");
-            const h = (height * heightList[idx]) / 100;
+        for (const state of heightList) {
+            ctx.fillStyle = state.color;
+            // ctx.fillStyle = ((sorting && prevheightList[idx] !== heightList[idx]) ? "red" : "white");
+            const h = (height * state.height) / 100;
             let y = height - h;
             ctx.fillRect(x, y, w, h);
             ctx.rect(x, y, w, h);
