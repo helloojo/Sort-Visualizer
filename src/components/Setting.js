@@ -16,6 +16,8 @@ class Setting extends Component {
         let length = parseInt(e.target.value) || 1;
         if (length < 1) {
             length = 1;
+        } else if (length > 1000) {
+            length = 1000;
         }
         this.props.handleLength(parseInt(length));
     }

@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 class BarCanvas extends Component {
     Canvas = document.createElement('canvas');
     ctx = null;
+    backCtx = null;
 
     componentDidMount() {
         if (this.ctx === null) {
@@ -24,28 +25,27 @@ class BarCanvas extends Component {
         } = this.props;
         this.Canvas.width = width;
         this.Canvas.height = height;
-        if (this.ctx === null) {
-            this.ctx = this.Canvas.getContext("2d", {
+        if (this.backCtx === null) {
+            this.backCtx = this.Canvas.getContext("2d", {
                 alpha: false
             });
         }
-        this.ctx.fillStyle = "black";
-        this.ctx.fillRect(0, 0, width, height);
-        this.ctx.fillStyle = "white";
-        this.ctx.beginPath();
+        this.backCtx.fillStyle = "black";
+        this.backCtx.fillRect(0, 0, width, height);
         const element = this.props.element.arr;
         const w = width / (element.length + 2);
+        this.backCtx.beginPath();
         let x = w;
         for (const state of element) {
-            this.ctx.fillStyle = state.color;
+            this.backCtx.fillStyle = state.color;
             const h = (height * state.height) / 100;
             let y = height - h;
-            this.ctx.fillRect(x, y, w, h);
-            this.ctx.rect(x, y, w, h);
+            this.backCtx.fillRect(x, y, w, h);
+            this.backCtx.rect(x, y, w, h);
             x += w;
         }
-        this.ctx.strokeStyle = "black";
-        this.ctx.stroke();
+        this.backCtx.strokeStyle = "black";
+        this.backCtx.stroke();
     }
 
     render() {
