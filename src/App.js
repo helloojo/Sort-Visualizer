@@ -9,6 +9,7 @@ import Element from "./sort/Element";
 import ElementMakeType from "./sort/ElementMakeType";
 import QuickSort from "./sort/QuickSort";
 import BottomUpMergeSort from "./sort/BottomUpMergeSort";
+import HeapSort from "./sort/HeapSort";
 
 class App extends React.Component {
     Bubble = 0;
@@ -92,95 +93,34 @@ class App extends React.Component {
         });
     }
 
-    HeapSort = (delay, length) => {
-        let timeidx = 0;
-        const heightList = this.state.heightList.slice();
-        const constructHeap = (arr, len) => {
-            for (let i = (len >> 1) - 1; i >= 0; i--) {
-                downHeap(arr, i, len);
-            }
-        }
-        const downHeap = (arr, here, len) => {
-            const data = arr[here];
-            let left, right, cmp_idx;
-            while ((left = (here << 1) + 1) < len) {
-                right = left + 1;
-                if (left === len - 1) {
-                    cmp_idx = left;
-                } else if (arr[left] > arr[right]) {
-                    cmp_idx = left;
-                } else {
-                    cmp_idx = right;
-                }
-                if (data > arr[cmp_idx]) {
-                    break;
-                }
-                arr[here] = arr[cmp_idx];
-                here = cmp_idx;
-            }
-            arr[here] = data;
-            const idx = this.updateHeightList(arr, (timeidx++) * delay);
-            this.DelayList.push(idx);
-        }
-
-        const heapSort = (arr, len) => {
-            constructHeap(arr, len);
-
-            for (let l = len - 1; l > 0; l--) {
-                const temp = arr[0];
-                arr[0] = arr[l];
-                arr[l] = temp;
-                downHeap(arr, 0, l);
-            }
-        }
-        heapSort(heightList, length);
-
-        return timeidx;
-    }
-
     startSorting = (type) => {
-        let timeIdx;
         const {
             delay,
-            length
         } = this.state;
+        let sort;
         switch (type) {
             case this.Bubble:
-                const sort = new BubbleSort(this.state.element.arr, delay, this.updateElementArr);
-                sort.start()
-                // timeIdx = this.BubbleSort(delay, length);
+                sort = new BubbleSort(this.state.element.arr, delay, this.updateElementArr);
                 break;
             case this.Selection:
-                const sort2 = new SelectionSort(this.state.element.arr, delay, this.updateElementArr);
-                sort2.start();
-                // timeIdx = this.SelectionSort(delay, length);
+                sort = new SelectionSort(this.state.element.arr, delay, this.updateElementArr);
                 break;
             case this.Insertion:
-                const sort3 = new InsertionSort(this.state.element.arr, delay, this.updateElementArr);
-                sort3.start();
-                // timeIdx = this.InsertionSort(delay, length);
+                sort = new InsertionSort(this.state.element.arr, delay, this.updateElementArr);
                 break;
             case this.Quick:
-                const sort4 = new QuickSort(this.state.element.arr, delay, this.updateElementArr);
-                sort4.start();
-                // timeIdx = this.QuickSort(delay, length);
+                sort = new QuickSort(this.state.element.arr, delay, this.updateElementArr);
                 break;
             case this.Merge:
-                const sort5 = new BottomUpMergeSort(this.state.element.arr, delay, this.updateElementArr);
-                sort5.start();
-                // timeIdx = this.MergeSort(delay, length);
+                sort = new BottomUpMergeSort(this.state.element.arr, delay, this.updateElementArr);
                 break;
             case this.Heap:
-                timeIdx = this.HeapSort(delay, length);
+                sort = new HeapSort(this.state.element.arr, delay, this.updateElementArr);
                 break;
             default:
                 break;
         }
-        setTimeout(() => {
-            this.setState({
-                sorting: false
-            });
-        }, (timeIdx) * delay);
+        sort.start();
     }
 
     handleSorting = () => {
