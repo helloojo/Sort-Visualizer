@@ -21,14 +21,14 @@ class Element {
                 offset = 100 / (length + 1);
                 this.arr.push(new State(offset, Color.WHITE));
                 for (let i = 0; i < length - 1; i++) {
-                    this.arr.push(new State(this.arr[i] + offset, Color.WHITE));
+                    this.arr.push(new State(this.arr[i].height + offset, Color.WHITE));
                 }
                 break;
             case ElementMakeType.DESCENDING:
                 offset = 100 / (length + 1);
                 this.arr.push(new State(100 - offset, Color.WHITE));
                 for (let i = 0; i < length - 1; i++) {
-                    this.arr.push(new State(this.arr[i] - offset, Color.WHITE));
+                    this.arr.push(new State(this.arr[i].height - offset, Color.WHITE));
                 }
                 break;
             default:

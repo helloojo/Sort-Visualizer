@@ -1,26 +1,34 @@
 class Sort {
-    constructor(elements, delay, handler) {
+    constructor(elements, delay, handler, stopHandler) {
         this.elements = elements;
         this.delay = delay;
         this.handler = handler;
-        this.event = -1;
-    }
-
-    setDelay = (delay) => {
-        this.delay = delay;
+        this.delayList = [];
+        this.stopHandler = stopHandler;
     }
 
     start = () => {
-        this.event = setTimeout(() => this.sort(), 0);
+        this.clearEvent();
+        this.delayList.push(setTimeout(() => this.sort(), 0));
     }
 
     stop = () => {
-        if (this.event !== -1) {
-            clearInterval(this.event);
+        this.clearEvent();
+        this.handler(this.elements);
+    }
+
+    clearEvent = () => {
+        for (const event of this.delayList) {
+            clearTimeout(event);
         }
+        this.delayList = [];
     }
 
     sort = () => {
+    }
+
+    registerCallback = (callback) => {
+        this.delayList.push(setTimeout(callback, this.delay));
     }
 }
 

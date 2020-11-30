@@ -16,8 +16,7 @@ class QuickSort extends Sort {
 
     position = (arr, left, right, i, j, pivot) => {
         if (i >= j) {
-            arr[left].height = arr[j].height;
-            arr[j].height = pivot;
+            [arr[left].height, arr[j].height] = [arr[j].height, pivot];
             arr[left].color = arr[j].color = Color.RED;
             this.handler(arr);
             arr[left].color = arr[j].color = Color.WHITE;
@@ -27,13 +26,11 @@ class QuickSort extends Sort {
         }
         while (arr[j].height > pivot) j--;
         while (i < j && arr[i].height <= pivot) i++;
-        const temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
         arr[i].color = arr[j].color = Color.RED;
         this.handler(arr);
         arr[i].color = arr[j].color = Color.WHITE;
-        setTimeout(() => this.position(arr, left, right, i, j, pivot), this.delay);
+        this.registerCallback(() => this.position(arr, left, right, i, j, pivot));
     }
 }
 

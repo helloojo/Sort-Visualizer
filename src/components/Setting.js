@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
+import SortType from "../sort/SortType";
+import ElementMakeType from "../sort/ElementMakeType";
+import {getSortName} from "../sort/SortUtils";
 
 class Setting extends Component {
     onTypeChange = (e) => {
-        this.props.handleType(parseInt(e.target.value));
+        this.props.handleSortType(parseInt(e.target.value));
     }
 
     onElemTypeChange = (e) => {
@@ -29,44 +32,42 @@ class Setting extends Component {
         this.props.handleSorting();
     }
 
+    onStopClick = () => {
+        this.props.handleStop();
+    }
+
     onRemakeClick = () => {
         this.props.remakeHeightList();
     }
 
     render() {
-        const sortType = [
-            "Bubble Sort",
-            "Selection Sort",
-            "Insertion Sort",
-            "Quick Sort",
-            "Merge Sort",
-            "Heap Sort"
-        ];
-        const elemType = [
-            "Random",
-            "Ascending",
-            "Descending",
-        ]
+        const sortingType = [];
+        for (const type in SortType) {
+            sortingType[SortType[type]] = getSortName(SortType[type]);
+        }
+        const elemType = [];
+        for (const type in ElementMakeType) {
+            elemType[ElementMakeType[type]] = type;
+        }
         const {
             length,
             delay,
-            sorting,
-            type,
-            eType
+            sortType,
+            elementType
         } = this.props;
         return (
             <div className="setting">
                 <label htmlFor="type">Sort Type</label>
                 <br/>
-                <select name="type" onChange={this.onTypeChange} value={type}>
-                    {sortType.map((sort, index) => (
+                <select name="type" onChange={this.onTypeChange} value={sortType}>
+                    {sortingType.map((sort, index) => (
                         <option value={index} key={index}>{sort}</option>
                     ))}
                 </select>
                 <br/>
                 <label htmlFor="elemtype">Elem Type</label>
                 <br/>
-                <select name="elemtype" onChange={this.onElemTypeChange} value={eType}>
+                <select name="elemtype" onChange={this.onElemTypeChange} value={elementType}>
                     {elemType.map((elem, index) => (
                         <option value={index} key={index}>{elem}</option>
                     ))}
@@ -74,14 +75,15 @@ class Setting extends Component {
                 <br/>
                 <label htmlFor="num">Elem Count</label>
                 <br/>
-                <input type="number" name="num" value={length} disabled={sorting} onChange={this.onElemCountChange}/>
+                <input type="number" name="num" value={length} onChange={this.onElemCountChange}/>
                 <br/>
                 <label htmlFor="delay">Delay</label>
                 <br/>
-                <input type="number" name="delay" value={delay} disabled={sorting} onChange={this.onDelayChange}/>ms
+                <input type="number" name="delay" value={delay} onChange={this.onDelayChange}/>ms
                 <br/>
-                <input type="button" value={sorting ? "Stop" : "Start"} onClick={this.onStartClick}/>
-                <input type="button" value="remake" disabled={sorting} onClick={this.onRemakeClick}/>
+                <input type="button" value="Start" onClick={this.onStartClick}/>
+                <input type="button" value="Stop" onClick={this.onStopClick}/>
+                <input type="button" value="remake" onClick={this.onRemakeClick}/>
             </div>
         )
     }

@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import BarCanvas from './BarCanvas';
 
 class BarContainer extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             width: 0,
             height: 0
@@ -30,11 +30,10 @@ class BarContainer extends Component {
     }
 
     render() {
-        const {heightList, sorting} = this.props;
         const {height, width} = this.state;
         return (
             <div className="bar-container" ref="barContainer">
-                <BarCanvas heightList={heightList} height={height} width={width} sorting={sorting}/>
+                <BarCanvas element={this.props.element} height={height} width={width}/>
             </div>
         );
     }

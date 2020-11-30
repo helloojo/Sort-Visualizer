@@ -12,7 +12,7 @@ class InsertionSort extends Sort {
             return;
         }
         const value = arr[i].height;
-        setTimeout(() => this.secondIterate(arr, i, i - 1, value), this.delay);
+        this.secondIterate(arr, i, i - 1, value);
     }
 
     secondIterate = (arr, i, j, value) => {
@@ -21,7 +21,7 @@ class InsertionSort extends Sort {
             arr[j + 1].color = Color.RED;
             this.handler(arr);
             arr[j + 1].color = Color.WHITE;
-            setTimeout(() => this.firstIterate(arr, i + 1), this.delay);
+            this.registerCallback(() => this.firstIterate(arr, i + 1));
             return;
         }
         arr[j + 1].height = arr[j].height;
@@ -29,7 +29,7 @@ class InsertionSort extends Sort {
         arr[j].color = Color.GREEN;
         this.handler(arr);
         arr[j + 1].color = arr[j].color = Color.WHITE;
-        setTimeout(() => this.secondIterate(arr, i, j - 1, value), this.delay);
+        this.registerCallback(() => this.secondIterate(arr, i, j - 1, value));
     }
 }
 

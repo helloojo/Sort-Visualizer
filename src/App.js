@@ -2,38 +2,28 @@ import React from 'react';
 import Header from './components/Header';
 import Container from './components/Container';
 import './style/App.css';
-import BubbleSort from "./sort/BubbleSort";
-import SelectionSort from "./sort/SelectionSort";
-import InsertionSort from "./sort/InsertionSort";
 import Element from "./sort/Element";
 import ElementMakeType from "./sort/ElementMakeType";
-import QuickSort from "./sort/QuickSort";
-import BottomUpMergeSort from "./sort/BottomUpMergeSort";
-import HeapSort from "./sort/HeapSort";
+import SortFactory from "./sort/SortFactory";
+import SortType from "./sort/SortType";
 
 class App extends React.Component {
-    Bubble = 0;
-    Selection = 1;
-    Insertion = 2;
-    Quick = 3;
-    Merge = 4;
-    Heap = 5;
-    DelayList = [];
+    sortFactory = new SortFactory();
+    sortInstance;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         const length = 100;
         let element = new Element();
         element.initElements(length, ElementMakeType.RANDOM);
 
         this.state = {
-            sorting: false,
             length,
             element,
-            type: 0,
-            eType: 0,
-            delay: 50
+            sortType: SortType.Bubble,
+            elementType: ElementMakeType.RANDOM,
+            delay: 10
         }
     }
 
@@ -44,115 +34,58 @@ class App extends React.Component {
     }
 
     remakeHeightList = () => {
-        const length = this.state.length;
-        const heightList = [];
-        let offset;
-        switch (this.state.eType) {
-            case 0:
-                for (let i = 0; i < length; i++) {
-                    const height = Math.random() * 100;
-                    heightList.push(height);
-                }
-                break;
-            case 1:
-                offset = 100 / (length + 1);
-                heightList.push(offset);
-                for (let i = 0; i < length - 1; i++) {
-                    heightList.push(heightList[i] + offset);
-                }
-                break;
-            case 2:
-                offset = 100 / (length + 1);
-                heightList.push(100 - offset);
-                for (let i = 0; i < length - 1; i++) {
-                    heightList.push(heightList[i] - offset);
-                }
-                break;
-            default:
-                break;
-        }
-
-        this.setState({
-            heightList
-        });
-    }
-
-    updateHeightList = (heightList, delay) => {
-        return setTimeout((heightList) => {
-            this.setState({
-                heightList
-            });
-        }, delay, heightList.slice());
+        this.handleStop();
+        const {
+            element,
+            length,
+            elementType
+        } = this.state;
+        element.initElements(length, elementType);
+        this.setState({element});
     }
 
     updateElementArr = (arr) => {
+        const element = this.state.element;
+        element.arr = arr;
         this.setState({
-            element: {
-                arr
-            }
+            element
         });
-    }
-
-    startSorting = (type) => {
-        const {
-            delay,
-        } = this.state;
-        let sort;
-        switch (type) {
-            case this.Bubble:
-                sort = new BubbleSort(this.state.element.arr, delay, this.updateElementArr);
-                break;
-            case this.Selection:
-                sort = new SelectionSort(this.state.element.arr, delay, this.updateElementArr);
-                break;
-            case this.Insertion:
-                sort = new InsertionSort(this.state.element.arr, delay, this.updateElementArr);
-                break;
-            case this.Quick:
-                sort = new QuickSort(this.state.element.arr, delay, this.updateElementArr);
-                break;
-            case this.Merge:
-                sort = new BottomUpMergeSort(this.state.element.arr, delay, this.updateElementArr);
-                break;
-            case this.Heap:
-                sort = new HeapSort(this.state.element.arr, delay, this.updateElementArr);
-                break;
-            default:
-                break;
-        }
-        sort.start();
     }
 
     handleSorting = () => {
-        this.setState({
-            sorting: !this.state.sorting
-        });
-        if (this.state.sorting === false) {
-            this.DelayList = [];
-            this.startSorting(this.state.type);
-        } else {
-            for (const idx of this.DelayList) {
-                clearTimeout(idx);
-            }
-            this.DelayList = [];
+        const {
+            sortType,
+            delay
+        } = this.state;
+        this.sortInstance = this.sortFactory.getSort(sortType, this.state.element.arr, delay, this.updateElementArr, this.handleSorting);
+        this.handleStop();
+        this.sortInstance.start();
+    }
+
+    handleStop = () => {
+        if(this.sortInstance) {
+            this.sortInstance.stop();
         }
     }
 
     handleDelay = (delay) => {
+        this.handleStop();
         this.setState({
             delay
         });
     }
 
-    handleType = (type) => {
+    handleSortType = (sortType) => {
+        this.handleStop();
         this.setState({
-            type
+            sortType
         }, this.remakeHeightList);
     }
 
-    handleElemType = (type) => {
+    handleElemType = (elementType) => {
+        this.handleStop();
         this.setState({
-            eType: type
+            elementType
         }, this.remakeHeightList);
     }
 
@@ -162,14 +95,15 @@ class App extends React.Component {
             length,
             delay,
             element,
-            type,
-            eType
+            sortType,
+            elementType
         } = this.state;
         const {
             handleLength,
             handleSorting,
+            handleStop,
             handleDelay,
-            handleType,
+            handleSortType,
             remakeHeightList,
             handleElemType
         } = this;
@@ -177,18 +111,8 @@ class App extends React.Component {
             <div className="App">
                 <Header/>
                 <Container
-                    length={length}
-                    delay={delay}
-                    sorting={sorting}
-                    heightList={element}
-                    type={type}
-                    eType={eType}
-                    handleLength={handleLength}
-                    handleSorting={handleSorting}
-                    handleDelay={handleDelay}
-                    handleType={handleType}
-                    remakeHeightList={remakeHeightList}
-                    handleElemType={handleElemType}
+                    {...this.state}
+                    {...this}
                 />
             </div>
         );

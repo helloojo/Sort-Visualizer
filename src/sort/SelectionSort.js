@@ -16,13 +16,11 @@ class SelectionSort extends Sort {
 
     chooseMinElement = (arr, i, j, minIdx) => {
         if (j >= arr.length) {
-            const temp = arr[minIdx];
-            arr[minIdx] = arr[i];
-            arr[i] = temp;
+            [arr[minIdx], arr[i]] = [arr[i], arr[minIdx]];
             arr[minIdx].color = arr[i].color = Color.RED;
             this.handler(arr);
             arr[minIdx].color = arr[i].color = Color.WHITE;
-            setTimeout(() => this.firstIterate(arr, i + 1), this.delay);
+            this.registerCallback(() => this.firstIterate(arr, i + 1));
             return;
         }
         if (arr[j].height < arr[minIdx].height) {
@@ -33,7 +31,7 @@ class SelectionSort extends Sort {
         }
         this.handler(arr);
         arr[j].color = Color.WHITE;
-        setTimeout(() => this.chooseMinElement(arr, i, j + 1, minIdx), this.delay)
+        this.registerCallback(() => this.chooseMinElement(arr, i, j + 1, minIdx));
     }
 }
 

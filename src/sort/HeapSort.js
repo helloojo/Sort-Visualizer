@@ -9,7 +9,7 @@ class HeapSort extends Sort {
     constructHeap = (arr, cur, cb) => {
         if (cur < 0) {
             this.handler(arr);
-            setTimeout(() => cb(), this.delay);
+            this.registerCallback(() => cb());
             return;
         }
         const left = (cur << 1) + 1;
@@ -23,10 +23,10 @@ class HeapSort extends Sort {
             return;
         }
         [arr[0], arr[end]] = [arr[end], arr[0]];
-        arr[0].color = arr[end].color = Color.RED;
+        arr[0].color = arr[end].color = Color.GREEN;
         this.handler(arr);
         arr[0].color = arr[end].color = Color.WHITE;
-        this.downHeap(arr, arr[0].height, 0, 1, 2, end, () => this.heapSort(arr, end - 1));
+        this.registerCallback(() => this.downHeap(arr, arr[0].height, 0, 1, 2, end, () => this.heapSort(arr, end - 1)));
     }
 
     downHeap = (arr, data, here, left, right, length, cb) => {
@@ -35,7 +35,7 @@ class HeapSort extends Sort {
             arr[here].height = data;
             this.handler(arr);
             arr[here].color = Color.WHITE;
-            setTimeout(() => cb(), this.delay);
+            this.registerCallback(() => cb());
             return;
         }
         let cmpIdx;
@@ -51,14 +51,14 @@ class HeapSort extends Sort {
             arr[here].height = data;
             this.handler(arr);
             arr[here].color = Color.WHITE;
-            setTimeout(() => cb(), this.delay);
+            this.registerCallback(() => cb());
             return;
         }
         arr[here].height = arr[cmpIdx].height;
-        arr[here].color = arr[cmpIdx].color = Color.GREEN;
+        arr[here].color = arr[cmpIdx].color = Color.RED;
         this.handler(arr);
         arr[here].color = arr[cmpIdx].color = Color.WHITE;
-        setTimeout(() => this.downHeap(arr, data, cmpIdx, (cmpIdx << 1) + 1, (cmpIdx << 1) + 2, length, cb), this.delay);
+        this.registerCallback(() => this.downHeap(arr, data, cmpIdx, (cmpIdx << 1) + 1, (cmpIdx << 1) + 2, length, cb));
     }
 }
 

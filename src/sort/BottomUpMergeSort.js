@@ -4,7 +4,7 @@ import Color from "./Color";
 class BottomUpMergeSort extends Sort {
     sort = () => {
         const newArr = [];
-        for(const e of this.elements) {
+        for (const e of this.elements) {
             newArr.push(e.height);
         }
         this.mergeSort(this.elements, newArr, 1);
@@ -21,7 +21,7 @@ class BottomUpMergeSort extends Sort {
     bottomUp = (arr, newArr, left, size) => {
         if (left >= arr.length) {
             this.handler(arr);
-            setTimeout(() => this.mergeSort(arr, newArr, size * 2), this.delay);
+            this.registerCallback(() => this.mergeSort(arr, newArr, size * 2));
             return;
         }
         this.merge(arr, newArr, left, left + size - 1, Math.min(left + size * 2 - 1, arr.length - 1), size);
@@ -49,14 +49,14 @@ class BottomUpMergeSort extends Sort {
     apply = (arr, newArr, current, left, right, size) => {
         if (current > right) {
             this.handler(arr);
-            setTimeout(() => this.bottomUp(arr, newArr, left+size*2, size), this.delay);
+            this.registerCallback(() => this.bottomUp(arr, newArr, left + size * 2, size));
             return;
         }
         arr[current].height = newArr[current];
         arr[current].color = Color.RED;
         this.handler(arr);
         arr[current].color = Color.WHITE;
-        setTimeout(() => this.apply(arr, newArr, current + 1, left, right, size), this.delay);
+        this.registerCallback(() => this.apply(arr, newArr, current + 1, left, right, size));
     }
 
 }
