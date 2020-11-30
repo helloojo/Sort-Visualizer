@@ -21,8 +21,8 @@ class QuickSort extends Sort {
             arr[left].color = arr[j].color = Color.RED;
             this.handler(arr);
             arr[left].color = arr[j].color = Color.WHITE;
-            setTimeout(() => this.quickSort(arr, left, j - 1), this.delay);
-            setTimeout(() => this.quickSort(arr, j + 1, right), this.delay);
+            this.quickSort(arr, left, j - 1);
+            this.quickSort(arr, j + 1, right);
             return;
         }
         while (arr[j].height > pivot) j--;

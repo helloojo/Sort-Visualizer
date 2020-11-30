@@ -8,6 +8,7 @@ import InsertionSort from "./sort/InsertionSort";
 import Element from "./sort/Element";
 import ElementMakeType from "./sort/ElementMakeType";
 import QuickSort from "./sort/QuickSort";
+import BottomUpMergeSort from "./sort/BottomUpMergeSort";
 
 class App extends React.Component {
     Bubble = 0;
@@ -21,7 +22,7 @@ class App extends React.Component {
     constructor() {
         super();
 
-        const length = 1000;
+        const length = 100;
         let element = new Element();
         element.initElements(length, ElementMakeType.RANDOM);
 
@@ -89,38 +90,6 @@ class App extends React.Component {
                 arr
             }
         });
-    }
-
-    MergeSort = (delay, length) => {
-        let timeidx = 0;
-        const heightList = this.state.heightList.slice();
-
-        const combine = (arr, left, right, arr_) => {
-            for (let i = left; i <= right; i++) {
-                arr[i] = arr_[i];
-                const idx = this.updateHeightList(arr, (timeidx++) * delay);
-                this.DelayList.push(idx);
-            }
-        }
-
-        const mergeSort = (arr, left, right, arr_) => {
-            if (left >= right) return;
-            const mid = ((left + right) >> 1);
-            mergeSort(arr, left, mid, arr_);
-            mergeSort(arr, mid + 1, right, arr_);
-            for (let k = left, i = left, j = mid + 1; k <= right; k++) {
-                if (j > right) arr_[k] = arr[i++];
-                else if (i > mid) arr_[k] = arr[j++];
-                else if (arr[i] < arr[j]) arr_[k] = arr[i++];
-                else arr_[k] = arr[j++];
-            }
-            combine(arr, left, right, arr_);
-        }
-        let copyArr = [];
-
-        mergeSort(heightList, 0, length - 1, copyArr);
-
-        return timeidx;
     }
 
     HeapSort = (delay, length) => {
@@ -197,7 +166,9 @@ class App extends React.Component {
                 // timeIdx = this.QuickSort(delay, length);
                 break;
             case this.Merge:
-                timeIdx = this.MergeSort(delay, length);
+                const sort5 = new BottomUpMergeSort(this.state.element.arr, delay, this.updateElementArr);
+                sort5.start();
+                // timeIdx = this.MergeSort(delay, length);
                 break;
             case this.Heap:
                 timeIdx = this.HeapSort(delay, length);
