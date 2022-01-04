@@ -1,5 +1,5 @@
 # Sort Visualizer
-정렬 알고리즘 시각화(http://rueng564.dothome.co.kr/)
+정렬 알고리즘 시각화
 ## TODO
   * [x] 버블 정렬 시각화
   * [x] 선택 정렬 시각화
